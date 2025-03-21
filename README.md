@@ -3,4 +3,4 @@
 # Este proyecto tiene un formulario
 # Captura del formulario
 
-![Captura] (imagenes\capturaFormulario.jpeg)
+![Captura] (imagenes/captura.png)
