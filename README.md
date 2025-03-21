@@ -3,4 +3,4 @@
 # Este proyecto tiene un formulario
 # Captura del formulario
 
-![Capturas de pantalla del formulario] (D:\MedacFctOposicones\FCT-Zaitec\imagenes\capturaFormulario.jpeg)
+![Captura] (imagenes\capturaFormulario.jpeg)

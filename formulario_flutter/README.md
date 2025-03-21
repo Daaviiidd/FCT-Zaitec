@@ -2,4 +2,4 @@
 
 Formulario de prueba
 
-![Capturas de pantalla del formulario] (imagenes/capturaFormulario.jpeg)
+![Captura] (imagenes/capturaFormulario.jpeg)
