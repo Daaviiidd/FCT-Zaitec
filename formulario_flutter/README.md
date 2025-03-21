@@ -2,4 +2,4 @@
 
 Formulario de prueba
 
-![Captura] (imagenes/captura.png)
+![Captura](https://github.com/Daaviiidd/FCT-Zaitec/blob/main/imagenes/captura.png)
