@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Landing Page',
+      title: 'Inicio',
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
@@ -120,6 +120,7 @@ class LoginPage extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     // Acción para las condiciones de uso
+                    // ignore: avoid_print
                     print("Condiciones de uso");
                   },
                   child: Text(
@@ -131,6 +132,7 @@ class LoginPage extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     // Acción para la política de privacidad
+                    // ignore: avoid_print
                     print("Política de privacidad");
                   },
                   child: Text(
@@ -191,6 +193,7 @@ class RegisterPage extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     // Acción para las condiciones de uso
+                    // ignore: avoid_print
                     print("Condiciones de uso");
                   },
                   child: Text(
@@ -202,6 +205,7 @@ class RegisterPage extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     // Acción para la política de privacidad
+                    // ignore: avoid_print
                     print("Política de privacidad");
                   },
                   child: Text(
@@ -222,6 +226,7 @@ class MyForm extends StatefulWidget {
   const MyForm({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _MyFormState createState() => _MyFormState();
 }
 
