@@ -10,7 +10,7 @@
 |:------------------------------------------------------------------------------:|:------------------------------------------------------------------------------:|
 |  <img src="" style="height: 50%; width:50%;"/>  |  <img src="" style="height: 50%; width:50%;"/>  |
 
-edición de readme por francisco...
+edición de readme por francisco y CArlos...
 
 
 
