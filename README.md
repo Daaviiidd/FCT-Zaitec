@@ -1,6 +1,6 @@
 # FCT-Zaitec
 # Esto es una descripción del proyecto
-<<<<<<< HEAD
+
 # Este proyecto tiene un formulario
 # Capturas de ejemplo de la app
 ![Captura](https://github.com/Daaviiidd/FCT-Zaitec/blob/main/imagenes/app.png)
