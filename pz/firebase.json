@@ -1,0 +1,45 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "fct-zaitec-medac",
+          "appId": "1:703221889400:android:5b65d2cd43d4df3fdb708d",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "fct-zaitec-medac",
+          "configurations": {
+            "android": "1:703221889400:android:5b65d2cd43d4df3fdb708d",
+            "ios": "1:703221889400:ios:ab497d78af3558e5db708d",
+            "web": "1:703221889400:web:9b07f79918a0a552db708d"
+          }
+        }
+      }
+    }
+  },
+  "emulators": {
+    "dataconnect": {
+      "dataDir": "dataconnect/.dataconnect/pgliteData"
+    }
+  },
+  "dataconnect": {
+    "source": "dataconnect"
+  },
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

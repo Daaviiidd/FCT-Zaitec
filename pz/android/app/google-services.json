@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "703221889400",
+    "project_id": "fct-zaitec-medac",
+    "storage_bucket": "fct-zaitec-medac.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:703221889400:android:5b19e48301f0537bdb708d",
+        "android_client_info": {
+          "package_name": "com.example.fct_inventario"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYNsNeg0nLfL6TLt6Fj8yo1TyduLiutq8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:703221889400:android:5b65d2cd43d4df3fdb708d",
+        "android_client_info": {
+          "package_name": "com.example.pz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYNsNeg0nLfL6TLt6Fj8yo1TyduLiutq8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
