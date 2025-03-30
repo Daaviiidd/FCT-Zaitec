@@ -41,48 +41,48 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyApgmI_dBiKqWCGevmKjZ-Iaucjr6BmfM0',
-    appId: '1:703221889400:web:f93f6537f075fd5bdb708d',
-    messagingSenderId: '703221889400',
-    projectId: 'fct-zaitec-medac',
-    authDomain: 'fct-zaitec-medac.firebaseapp.com',
-    storageBucket: 'fct-zaitec-medac.firebasestorage.app',
-    measurementId: 'G-JVVH2JGE2F',
+    apiKey: 'AIzaSyD56d5OYMkaMnvj_8VGQe6mQC0zjKYPhKg',
+    appId: '1:235265469094:web:b0514a034ada0eff502267',
+    messagingSenderId: '235265469094',
+    projectId: 'fct-zaitec',
+    authDomain: 'fct-zaitec.firebaseapp.com',
+    storageBucket: 'fct-zaitec.firebasestorage.app',
+    measurementId: 'G-W495SH15J7',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCYNsNeg0nLfL6TLt6Fj8yo1TyduLiutq8',
-    appId: '1:703221889400:android:5b19e48301f0537bdb708d',
-    messagingSenderId: '703221889400',
-    projectId: 'fct-zaitec-medac',
-    storageBucket: 'fct-zaitec-medac.firebasestorage.app',
+    apiKey: 'AIzaSyAInwTUHYHryt1VtOsQlOazuCLmCfDmCro',
+    appId: '1:235265469094:android:a20c39ac43f040d2502267',
+    messagingSenderId: '235265469094',
+    projectId: 'fct-zaitec',
+    storageBucket: 'fct-zaitec.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB7IjNxU_aavt6gXZAb8k9vu_hDcD6HJ7k',
-    appId: '1:703221889400:ios:995a6c8adaa26dbddb708d',
-    messagingSenderId: '703221889400',
-    projectId: 'fct-zaitec-medac',
-    storageBucket: 'fct-zaitec-medac.firebasestorage.app',
-    iosBundleId: 'com.example.fctInventario',
+    apiKey: 'AIzaSyCIQma2phRyHqFuhfjFHtLpIEECxoygOXs',
+    appId: '1:235265469094:ios:12b480cc20fe05b5502267',
+    messagingSenderId: '235265469094',
+    projectId: 'fct-zaitec',
+    storageBucket: 'fct-zaitec.firebasestorage.app',
+    iosBundleId: 'com.example.flutterApplication1',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyB7IjNxU_aavt6gXZAb8k9vu_hDcD6HJ7k',
-    appId: '1:703221889400:ios:995a6c8adaa26dbddb708d',
-    messagingSenderId: '703221889400',
-    projectId: 'fct-zaitec-medac',
-    storageBucket: 'fct-zaitec-medac.firebasestorage.app',
-    iosBundleId: 'com.example.fctInventario',
+    apiKey: 'AIzaSyCIQma2phRyHqFuhfjFHtLpIEECxoygOXs',
+    appId: '1:235265469094:ios:12b480cc20fe05b5502267',
+    messagingSenderId: '235265469094',
+    projectId: 'fct-zaitec',
+    storageBucket: 'fct-zaitec.firebasestorage.app',
+    iosBundleId: 'com.example.flutterApplication1',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyApgmI_dBiKqWCGevmKjZ-Iaucjr6BmfM0',
-    appId: '1:703221889400:web:9b07f79918a0a552db708d',
-    messagingSenderId: '703221889400',
-    projectId: 'fct-zaitec-medac',
-    authDomain: 'fct-zaitec-medac.firebaseapp.com',
-    storageBucket: 'fct-zaitec-medac.firebasestorage.app',
-    measurementId: 'G-WFPC6NGDBD',
+    apiKey: 'AIzaSyD56d5OYMkaMnvj_8VGQe6mQC0zjKYPhKg',
+    appId: '1:235265469094:web:26265dedda2bad61502267',
+    messagingSenderId: '235265469094',
+    projectId: 'fct-zaitec',
+    authDomain: 'fct-zaitec.firebaseapp.com',
+    storageBucket: 'fct-zaitec.firebasestorage.app',
+    measurementId: 'G-VBW7E7MC7V',
   );
 }
