@@ -123,9 +123,9 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
     final _categoriaController = TextEditingController(text: categoria);
     final _cantidadController = TextEditingController(text: cantidadStock.toString());
     final _precioController = TextEditingController(text: precio.toString());
-    _imagenSeleccionada = null; // Reset image
-    _imagenUrlController.text = imagenUrl; // Prellenar el campo de URL si ya tiene valor
-
+    _imagenSeleccionada = null; // resetear imagen
+    _imagenUrlController.text = imagenUrl; // Rellenar el campo de URL si ya tiene valor
+//modal de ingreso de productos
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

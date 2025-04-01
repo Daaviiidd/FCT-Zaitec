@@ -66,7 +66,8 @@ class _LoginPageState extends State<LoginPage> {
     _passwordController.dispose();
     super.dispose();
   }
-
+  
+  //Formulario de inicio de sesión
   @override
   Widget build(BuildContext context) {
     return Scaffold(
