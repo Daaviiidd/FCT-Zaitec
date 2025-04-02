@@ -1,4 +1,4 @@
-# FCT-Zaitec
+# FCT-Oposiciones
 # Esto es una descripción del proyecto
 
 
