@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductGallery extends StatelessWidget {
-  const ProductGallery({Key? key}) : super(key: key);
+  const ProductGallery({super.key});
 
   Stream<QuerySnapshot> obtenerProductos() {
     return FirebaseFirestore.instance.collection('productos').snapshots();
@@ -46,9 +46,10 @@ class ProductGallery extends StatelessWidget {
                   child: Column(
                     children: [
                       Expanded(
-                        child: imagenUrl.isNotEmpty
-                            ? Image.network(imagenUrl, fit: BoxFit.cover)
-                            : const Icon(Icons.image, size: 80),
+                        child:
+                            imagenUrl.isNotEmpty
+                                ? Image.network(imagenUrl, fit: BoxFit.cover)
+                                : const Icon(Icons.image, size: 80),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
