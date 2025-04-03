@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';//Base de datos en tiempo real de Firebase 
 import 'package:firebase_messaging/firebase_messaging.dart'; // Importa el paquete de FCM
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:image_picker/image_picker.dart';// Paquete de Flutter que permite seleccionar imágenes y videos desde la galería 
 import 'tienda_virtual.dart';
 
 class PaginaGestionProductos extends StatefulWidget {
@@ -123,9 +123,9 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
     final _categoriaController = TextEditingController(text: categoria);
     final _cantidadController = TextEditingController(text: cantidadStock.toString());
     final _precioController = TextEditingController(text: precio.toString());
-    _imagenSeleccionada = null; // Reset image
-    _imagenUrlController.text = imagenUrl; // Prellenar el campo de URL si ya tiene valor
-
+    _imagenSeleccionada = null; // resetear imagen
+    _imagenUrlController.text = imagenUrl; // Rellenar el campo de URL si ya tiene valor
+//modal de ingreso de productos
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

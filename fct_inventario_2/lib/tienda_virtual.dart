@@ -27,7 +27,7 @@ class ProductGallery extends StatelessWidget {
           }
 
           final productos = snapshot.data!.docs;
-
+//Galería de productos
           return PageView.builder(
             itemCount: productos.length,
             itemBuilder: (context, index) {

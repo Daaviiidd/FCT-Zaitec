@@ -1,5 +1,5 @@
 # FCT-Oposiciones
-# Esto es una descripción del proyecto
+# Esto es una descripción del proyecto.
 
 
 
