@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';//Base de datos en tiempo real de Firebase 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart'; // Importa el paquete de FCM
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';// Paquete de Flutter que permite seleccionar imágenes y videos desde la galería 
+import 'package:image_picker/image_picker.dart';
 import 'tienda_virtual.dart';
 
 class PaginaGestionProductos extends StatefulWidget {
@@ -16,16 +16,23 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
   void _navegarAGaleria() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ProductGallery()), // Cambia esto por la clase de tu galería
+      MaterialPageRoute(
+        builder: (context) => ProductGallery(),
+      ), // Cambia esto por la clase de tu galería
     );
   }
-  final CollectionReference _productos =
-      FirebaseFirestore.instance.collection('productos');
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance; // Instancia de FCM
 
-  final TextEditingController _busquedaNombreController = TextEditingController();
-  final TextEditingController _busquedaCategoriaController = TextEditingController();
-  final TextEditingController _imagenUrlController = TextEditingController(); 
+  final CollectionReference _productos = FirebaseFirestore.instance.collection(
+    'productos',
+  );
+  final FirebaseMessaging _firebaseMessaging =
+      FirebaseMessaging.instance; // Instancia de FCM
+
+  final TextEditingController _busquedaNombreController =
+      TextEditingController();
+  final TextEditingController _busquedaCategoriaController =
+      TextEditingController();
+  final TextEditingController _imagenUrlController = TextEditingController();
 
   File? _imagenSeleccionada;
 
@@ -100,7 +107,9 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
   Future<void> enviarNotificacionStockBajo(String nombreProducto) async {
     try {
       // Enviar la notificación push utilizando FCM
-      await _firebaseMessaging.subscribeToTopic("stock_bajo"); // Se suscribe a un tema para notificaciones de stock bajo
+      await _firebaseMessaging.subscribeToTopic(
+        "stock_bajo",
+      ); // Se suscribe a un tema para notificaciones de stock bajo
       // Enviar notificación
       // Este código requiere que ya tengas configurada la parte del backend para enviar la notificación real.
       print("Notificación enviada para el producto: $nombreProducto");
@@ -118,97 +127,117 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
     double precio = 0.0,
     String imagenUrl = '',
   }) {
-    final _nombreController = TextEditingController(text: nombre);
-    final _descripcionController = TextEditingController(text: descripcion);
-    final _categoriaController = TextEditingController(text: categoria);
-    final _cantidadController = TextEditingController(text: cantidadStock.toString());
-    final _precioController = TextEditingController(text: precio.toString());
-    _imagenSeleccionada = null; // resetear imagen
-    _imagenUrlController.text = imagenUrl; // Rellenar el campo de URL si ya tiene valor
-//modal de ingreso de productos
+    final nombreController = TextEditingController(text: nombre);
+    final descripcionController = TextEditingController(text: descripcion);
+    final categoriaController = TextEditingController(text: categoria);
+    final cantidadController = TextEditingController(
+      text: cantidadStock.toString(),
+    );
+    final precioController = TextEditingController(text: precio.toString());
+    _imagenSeleccionada = null; // Reset image
+    _imagenUrlController.text =
+        imagenUrl; // Prellenar el campo de URL si ya tiene valor
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(id.isEmpty ? 'Agregar Producto' : 'Editar Producto'),
-        content: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              _buildTextField('Nombre', _nombreController),
-              _buildTextField('Descripción', _descripcionController),
-              _buildTextField('Categoría', _categoriaController),
-              _buildTextField('Cantidad en Stock', _cantidadController, isNumber: true),
-              _buildTextField('Precio', _precioController, isNumber: true),
-              const SizedBox(height: 16),
-              // Mostrar imagen desde URL si existe
-              _imagenSeleccionada != null
-                  ? Image.file(_imagenSeleccionada!, height: 100)
-                  : imagenUrl.isNotEmpty
+      builder:
+          (context) => AlertDialog(
+            title: Text(id.isEmpty ? 'Agregar Producto' : 'Editar Producto'),
+            content: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  _buildTextField('Nombre', nombreController),
+                  _buildTextField('Descripción', descripcionController),
+                  _buildTextField('Categoría', categoriaController),
+                  _buildTextField(
+                    'Cantidad en Stock',
+                    cantidadController,
+                    isNumber: true,
+                  ),
+                  _buildTextField('Precio', precioController, isNumber: true),
+                  const SizedBox(height: 16),
+                  // Mostrar imagen desde URL si existe
+                  _imagenSeleccionada != null
+                      ? Image.file(_imagenSeleccionada!, height: 100)
+                      : imagenUrl.isNotEmpty
                       ? Image.network(imagenUrl, height: 100)
                       : Container(),
-              // Campo para ingresar la URL de la imagen
-              TextField(
-                controller: _imagenUrlController,
-                decoration: InputDecoration(
-                  labelText: 'URL de la Imagen (opcional)',
-                  border: OutlineInputBorder(),
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                ),
+                  // Campo para ingresar la URL de la imagen
+                  TextField(
+                    controller: _imagenUrlController,
+                    decoration: InputDecoration(
+                      labelText: 'URL de la Imagen (opcional)',
+                      border: OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextButton.icon(
+                    onPressed: _seleccionarImagen,
+                    icon: Icon(Icons.image),
+                    label: Text('Seleccionar Imagen'),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-              TextButton.icon(
-                onPressed: _seleccionarImagen,
-                icon: Icon(Icons.image),
-                label: Text('Seleccionar Imagen'),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Cancelar'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final nombre = nombreController.text;
+                  final descripcion = descripcionController.text;
+                  final categoria = categoriaController.text;
+                  final cantidadStock =
+                      int.tryParse(cantidadController.text) ?? 0;
+                  final precio = double.tryParse(precioController.text) ?? 0.0;
+
+                  // Usar la URL proporcionada en lugar de subir una imagen
+                  String? imagenUrl =
+                      _imagenUrlController.text.isNotEmpty
+                          ? _imagenUrlController.text
+                          : null;
+
+                  if (id.isEmpty) {
+                    await agregarProducto(
+                      nombre,
+                      descripcion,
+                      categoria,
+                      cantidadStock,
+                      precio,
+                      imagenUrl,
+                    );
+                  } else {
+                    await editarProducto(
+                      id,
+                      nombre,
+                      descripcion,
+                      categoria,
+                      cantidadStock,
+                      precio,
+                      imagenUrl ?? imagenUrl,
+                    );
+                  }
+
+                  Navigator.pop(context);
+                },
+                child: Text(id.isEmpty ? 'Agregar' : 'Actualizar'),
               ),
             ],
           ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('Cancelar'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final nombre = _nombreController.text;
-              final descripcion = _descripcionController.text;
-              final categoria = _categoriaController.text;
-              final cantidadStock = int.tryParse(_cantidadController.text) ?? 0;
-              final precio = double.tryParse(_precioController.text) ?? 0.0;
-
-              // Usar la URL proporcionada en lugar de subir una imagen
-              String? imagenUrl = _imagenUrlController.text.isNotEmpty
-                  ? _imagenUrlController.text
-                  : null;
-
-              if (id.isEmpty) {
-                await agregarProducto(
-                    nombre, descripcion, categoria, cantidadStock, precio, imagenUrl);
-              } else {
-                await editarProducto(
-                    id,
-                    nombre,
-                    descripcion,
-                    categoria,
-                    cantidadStock,
-                    precio,
-                    imagenUrl ?? imagenUrl);
-              }
-
-              Navigator.pop(context);
-            },
-            child: Text(id.isEmpty ? 'Agregar' : 'Actualizar'),
-          ),
-        ],
-      ),
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller,
-      {bool isNumber = false}) {
+  Widget _buildTextField(
+    String label,
+    TextEditingController controller, {
+    bool isNumber = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 6.0),
       child: TextField(
@@ -230,19 +259,19 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
       appBar: AppBar(
         title: Text('Inventario'),
         backgroundColor: Colors.blueAccent,
-         actions: [
+        actions: [
           // Botón en la esquina superior derecha para ir a la galería
-          IconButton(
-            icon: Icon(Icons.image),
-            onPressed: _navegarAGaleria,
-          ),
+          IconButton(icon: Icon(Icons.image), onPressed: _navegarAGaleria),
         ],
       ),
       body: Column(
         children: [
           // Buscadores
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 30.0,
+              vertical: 16.0,
+            ),
             child: Row(
               children: [
                 Expanded(
@@ -295,7 +324,10 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
           ),
           // Botón para agregar producto
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
+            padding: const EdgeInsets.symmetric(
+              vertical: 10.0,
+              horizontal: 30.0,
+            ),
             child: ElevatedButton(
               onPressed: () => mostrarDialogoProducto(),
               child: Text('Agregar Producto'),
@@ -303,7 +335,7 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
           ),
           // Lista de productos
           Expanded(
-            child: StreamBuilder<QuerySnapshot>( 
+            child: StreamBuilder<QuerySnapshot>(
               stream: obtenerProductos(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -314,15 +346,20 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
                   return Center(child: Text('No hay productos disponibles'));
                 }
 
-                final productos = snapshot.data!.docs.where((producto) {
-                  final nombre = producto['nombre'].toString().toLowerCase();
-                  final categoria = producto['categoria'].toString().toLowerCase();
-                  final filtroNombre = _busquedaNombreController.text.toLowerCase();
-                  final filtroCategoria = _busquedaCategoriaController.text.toLowerCase();
+                final productos =
+                    snapshot.data!.docs.where((producto) {
+                      final nombre =
+                          producto['nombre'].toString().toLowerCase();
+                      final categoria =
+                          producto['categoria'].toString().toLowerCase();
+                      final filtroNombre =
+                          _busquedaNombreController.text.toLowerCase();
+                      final filtroCategoria =
+                          _busquedaCategoriaController.text.toLowerCase();
 
-                  return nombre.contains(filtroNombre) &&
-                      categoria.contains(filtroCategoria);
-                }).toList();
+                      return nombre.contains(filtroNombre) &&
+                          categoria.contains(filtroCategoria);
+                    }).toList();
 
                 if (productos.isEmpty) {
                   return Center(child: Text('No se encontraron productos'));
@@ -341,15 +378,25 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
                     final imagenUrl = producto['imagen'];
 
                     return Card(
-                      margin:
-                          const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 8.0,
+                        horizontal: 30.0,
+                      ),
                       child: ListTile(
                         contentPadding: EdgeInsets.all(16),
-                        leading: imagenUrl.isNotEmpty
-                            ? Image.network(imagenUrl, width: 50, height: 50, fit: BoxFit.cover)
-                            : Icon(Icons.image),
+                        leading:
+                            imagenUrl.isNotEmpty
+                                ? Image.network(
+                                  imagenUrl,
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                )
+                                : Icon(Icons.image),
                         title: Text(nombre),
-                        subtitle: Text('Categoría: $categoria\nStock: $cantidadStock\nPrecio: \ ${precio.toStringAsFixed(2)} €'),
+                        subtitle: Text(
+                          'Categoría: $categoria\nStock: $cantidadStock\nPrecio:  ${precio.toStringAsFixed(2)} €',
+                        ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [

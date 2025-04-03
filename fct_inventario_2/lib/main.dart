@@ -1,4 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';//Base de datos en tiempo real de Firebase 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'register_page.dart';
@@ -40,7 +40,7 @@ class WelcomePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.school, size: 100, color: Colors.blueAccent),
+              Image.asset('assets/images/bitmap100.png', height: 100),
               const SizedBox(height: 20),
               const Text(
                 '¡Bienvenido a Oposiciones!',

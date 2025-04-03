@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="OPOSICIONES"
+        android:label="fct_inventario_2"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

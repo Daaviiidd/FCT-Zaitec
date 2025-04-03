@@ -1,0 +1,12 @@
+specVersion: "v1"
+serviceId: "fct-zaitec"
+location: "us-central1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "fdcdb"
+      cloudSql:
+        instanceId: "fct-zaitec-fdc"
+      # schemaValidation: "COMPATIBLE"
+connectorDirs: ["./connector"]
