@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';//Base de datos en tiempo real de Firebase 
+import 'package:cloud_firestore/cloud_firestore.dart'; // Base de datos en tiempo real de Firebase
 import 'package:flutter/material.dart';
 import 'gestion_productos.dart';
 import 'tienda_virtual.dart';
@@ -16,44 +16,58 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
 
   Future<void> _login() async {
-    final email = _emailController.text;
-    final password = _passwordController.text;
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
 
-    if (email.isEmpty || password.isEmpty) return;
+    print("Intentando iniciar sesión con: $email");
 
-    // Consultar Firestore para verificar los datos de inicio de sesión
-    final userSnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .where('email', isEqualTo: email)
-        .where('password', isEqualTo: password) // ⚠️ No recomendado (usar Firebase Auth)
-        .get();
+    if (email.isEmpty || password.isEmpty) {
+      print("Error: Campos vacíos");
+      return;
+    }
 
-    if (userSnapshot.docs.isNotEmpty) {
-      final userDoc = userSnapshot.docs.first;
-      final userRole = userDoc['role']; // Obtener el rol del usuario
+    try {
+      // Consultar Firestore para verificar los datos de inicio de sesión
+      final userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .where('password', isEqualTo: password) // ⚠️ No recomendado (usar Firebase Auth)
+          .get();
 
-      // Redirigir según el rol del usuario
-      if (userRole == 'admin') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Bienvenido, Administrador')),
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const PaginaGestionProductos()), // Página de administración
-        );
+      print("Usuarios encontrados: ${userSnapshot.docs.length}");
+
+      if (userSnapshot.docs.isNotEmpty) {
+        final userDoc = userSnapshot.docs.first;
+        final userRole = userDoc['role']; // Obtener el rol del usuario
+
+        print("Rol del usuario: $userRole");
+
+        // Redirigir según el rol del usuario
+        if (userRole == 'admin') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Bienvenido, Administrador')),
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const PaginaGestionProductos()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Bienvenido, Usuario')),
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const ProductGallery()),
+          );
+        }
       } else {
+        print("Credenciales incorrectas");
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Bienvenido, Usuario')),
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const ProductGallery()), // Página de la tienda virtual
+          const SnackBar(content: Text('Credenciales incorrectas')),
         );
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Credenciales incorrectas')),
-      );
+    } catch (e) {
+      print("Error en la consulta a Firestore: $e");
     }
 
     _emailController.clear();
@@ -67,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  //Formulario de inicio de sesión
+  // Formulario de inicio de sesión
   @override
   Widget build(BuildContext context) {
     return Scaffold(
