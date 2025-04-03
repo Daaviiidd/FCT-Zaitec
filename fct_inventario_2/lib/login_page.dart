@@ -1,4 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart'; //Base de datos en tiempo real de Firebase
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Importa Firebase Auth
 import 'gestion_productos.dart';
@@ -133,7 +134,6 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  //Formulario de inicio de sesión
   @override
   Widget build(BuildContext context) {
     return Scaffold(
