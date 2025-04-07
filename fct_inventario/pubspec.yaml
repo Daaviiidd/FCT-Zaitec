@@ -15,7 +15,7 @@ dependencies:
   firebase_messaging: ^15.2.4
   image_picker: ^1.0.7
   firebase_auth: ^5.5.2
-  
+  flutter_spinkit: ^5.2.0
 
 dev_dependencies:
   flutter_test:
