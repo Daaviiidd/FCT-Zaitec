@@ -1,14 +1,12 @@
-import 'package:firebase_core/firebase_core.dart';//Base de datos en tiempo real de Firebase 
+import 'package:firebase_core/firebase_core.dart'; //Base de datos en tiempo real de Firebase
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'register_page.dart';
-import 'login_page.dart';
+import 'pages/login/login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MainApp());
 }
 
@@ -51,7 +49,9 @@ class WelcomePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const RegisterPage()),
+                    MaterialPageRoute(
+                      builder: (context) => const RegisterPage(),
+                    ),
                   );
                 },
                 child: const Padding(
