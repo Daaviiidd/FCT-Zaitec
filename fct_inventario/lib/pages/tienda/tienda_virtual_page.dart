@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'product_detail_page.dart';
+import '../product_detail/product_detail_page.dart';
 
 class ProductGallery extends StatelessWidget {
   const ProductGallery({Key? key}) : super(key: key);

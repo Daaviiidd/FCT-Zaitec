@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart'; //Base de datos en tiempo real de Firebase
 import 'package:flutter/material.dart';
-import '../../gestion_productos.dart';
-import '../../tienda_virtual.dart';
+import '../inventario/gestion_productos.dart';
+import '../tienda/tienda_virtual_page.dart';
 
 // PÁGINA DE INICIO DE SESIÓN
 class LoginPage extends StatefulWidget {
