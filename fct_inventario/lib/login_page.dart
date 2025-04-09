@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart'; // Base de datos Firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'gestion_productos.dart';
 import 'tienda_virtual.dart';
@@ -40,13 +40,15 @@ class _LoginPageState extends State<LoginPage> {
       if (userSnapshot.docs.isNotEmpty) {
         final userDoc = userSnapshot.docs.first;
         final userRole = userDoc['role'];
+        final userName = userDoc['name'];
 
         print('✅ Inicio de sesión exitoso');
         print('🧑‍💼 Rol: $userRole');
+        print('🙋‍♂️ Nombre: $userName');
 
         if (userRole == 'admin') {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Bienvenido, Administrador')),
+            SnackBar(content: Text('Bienvenido, Administrador $userName')),
           );
           Navigator.pushReplacement(
             context,
@@ -54,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Bienvenido, Usuario')),
+            SnackBar(content: Text('Bienvenido, $userName')),
           );
           Navigator.pushReplacement(
             context,
@@ -102,7 +104,6 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-             
                 TextField(
                   controller: _emailController,
                   decoration: const InputDecoration(labelText: 'Email'),
