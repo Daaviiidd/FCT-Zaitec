@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart'; // Importa Firebase Auth
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'tienda_virtual.dart'; // Asegúrate de importar la página correcta para redirigir
+import '../tienda/tienda_virtual_page.dart'; // Asegúrate de importar la página correcta para redirigir
 
 // PÁGINA DE REGISTRO
 class RegisterPage extends StatelessWidget {

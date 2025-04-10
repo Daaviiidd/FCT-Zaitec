@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';//Base de datos en tiempo 
 import 'package:firebase_messaging/firebase_messaging.dart'; // Importa el paquete de FCM
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';// Paquete de Flutter que permite seleccionar imágenes y videos desde la galería 
-import 'tienda_virtual.dart';
+import '../tienda/tienda_virtual_page.dart';
 
 class PaginaGestionProductos extends StatefulWidget {
   const PaginaGestionProductos({super.key});
