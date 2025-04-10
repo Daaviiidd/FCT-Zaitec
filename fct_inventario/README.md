@@ -1,3 +1,3 @@
 # fct_inventario
 
-A new Flutter project.
+Copia de Main actualizada
