@@ -1,7 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart'; //Base de datos en tiempo real de Firebase
+import 'package:firebase_auth/firebase_auth.dart'; // Importa Firebase Auth
 import 'package:flutter/material.dart';
-import '../inventario/gestion_productos.dart';
-import '../tienda/tienda_virtual_page.dart';
+import '../../pages/inventario/gestion_productos.dart';
+import '../../pages/tienda/tienda_virtual_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Importa Cloud Firestore
+
 
 // PÁGINA DE INICIO DE SESIÓN
 class LoginPage extends StatefulWidget {
@@ -15,55 +17,72 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   Future<void> _login() async {
     final email = _emailController.text;
     final password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) return;
 
-    // Consultar Firestore para verificar los datos de inicio de sesión
-    final userSnapshot =
-        await FirebaseFirestore.instance
+    try {
+      // Intentar iniciar sesión con Firebase Authentication
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      User? user = userCredential.user;
+
+      if (user != null && user.emailVerified) {
+        // Si el correo está verificado, redirigir a la tienda
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Bienvenido')),
+        );
+
+        // Verificar el rol desde Firestore
+        final userSnapshot = await FirebaseFirestore.instance
             .collection('users')
-            .where('email', isEqualTo: email)
-            .where(
-              'password',
-              isEqualTo: password,
-            ) // ⚠️ No recomendado (usar Firebase Auth)
+            .doc(user.uid)
             .get();
 
-    if (userSnapshot.docs.isNotEmpty) {
-      final userDoc = userSnapshot.docs.first;
-      final userRole = userDoc['role']; // Obtener el rol del usuario
+        if (userSnapshot.exists) {
+          final userRole = userSnapshot['role']; // Obtener el rol del usuario
 
-      // Redirigir según el rol del usuario
-      if (userRole == 'admin') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Bienvenido, Administrador')),
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const PaginaGestionProductos(),
-          ), // Página de administración
-        );
+          // Redirigir según el rol del usuario
+          if (userRole == 'admin') {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const PaginaGestionProductos(),
+              ), // Página de administración
+            );
+          } else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ProductGallery(),
+              ), // Página de la tienda virtual
+            );
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Error al obtener el rol del usuario')),
+          );
+        }
       } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Bienvenido, Usuario')));
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const ProductGallery(),
-          ), // Página de la tienda virtual
+        // Si el correo no está verificado
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Por favor, verifica tu correo')),
         );
       }
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Credenciales incorrectas')));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al iniciar sesión: $e')),
+      );
     }
 
+    // Limpiar los campos después de intentarlo
     _emailController.clear();
     _passwordController.clear();
   }
@@ -75,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  //Formulario de inicio de sesión
+  // Formulario de inicio de sesión
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,6 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                 TextField(
                   controller: _emailController,
                   decoration: const InputDecoration(labelText: 'Email'),
+                  keyboardType: TextInputType.emailAddress,
                 ),
                 TextField(
                   controller: _passwordController,
@@ -114,4 +134,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-

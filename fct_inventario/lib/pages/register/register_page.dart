@@ -116,8 +116,7 @@ class MyFormState extends State<MyForm> {
       // Esto simula que esperamos que el usuario haya verificado su correo
       while (!user.emailVerified) {
         await Future.delayed(const Duration(seconds: 1));
-        await user
-            .reload(); // Recargar el estado del usuario para ver si ha verificado el correo
+        await user.reload(); // Recargar el estado del usuario para ver si ha verificado el correo
       }
 
       // Redirigir al usuario a la página de la tienda virtual o cualquier página que desees
