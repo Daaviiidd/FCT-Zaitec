@@ -1,36 +1,66 @@
 import 'package:firebase_auth/firebase_auth.dart'; // Importa Firebase Auth
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../tienda/tienda_virtual_page.dart'; // Asegúrate de importar la página correcta para redirigir
+import '../login/login_page.dart';
 
 // PÁGINA DE REGISTRO
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Formulario de Registro')),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+      appBar: AppBar(),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(32.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.blueAccent, width: 2),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.3),
-                      blurRadius: 6,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
+              const Text('Formulario de registro'),
+              // Logo
+              Image.asset('assets/images/bitmap100.png', height: 100),
+              const SizedBox(height: 40),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 400), // Máximo ancho
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.blueAccent, width: 2),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: const MyForm(),
                 ),
-                child: const MyForm(),
+              ),
+              const SizedBox(height: 20),
+
+              // Línea para volver"
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('¿Ya tiene cuenta? '),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => LoginPage()));
+                      },
+                    
+                    child: const Text(
+                      'Inicie sesión',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    ),
+                ],
               ),
             ],
           ),
@@ -119,10 +149,10 @@ class MyFormState extends State<MyForm> {
         await user.reload(); // Recargar el estado del usuario para ver si ha verificado el correo
       }
 
-      // Redirigir al usuario a la página de la tienda virtual o cualquier página que desees
+      // Botón de volver al Login
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const ProductGallery()),
+        MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     } catch (e) {
       // Mostrar mensaje de error si ocurre un problema

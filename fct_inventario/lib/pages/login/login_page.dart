@@ -16,7 +16,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-//Loading
 
   //Formulario
   final _emailController = TextEditingController();
@@ -100,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  // Loading
+  // Página de Loading
   bool _isLoading = true;
    @override
   void initState() {
@@ -130,7 +129,6 @@ Widget build(BuildContext context) {
             // Logo
             Image.asset('assets/images/bitmap100.png', height: 100),
             const SizedBox(height: 40),
-
             // Contenedor centrado con tamaño limitado
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 400), // Máximo ancho
@@ -173,19 +171,19 @@ Widget build(BuildContext context) {
             ),
             const SizedBox(height: 20),
 
-        // Texto de registro fuera del formulario
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text("¿No tiene cuenta?"),
-            TextButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => RegisterPage()));
-              },
-              child: const Text('Regístrese'),
+            // Texto de registro fuera del formulario
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("¿No tiene cuenta?"),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => RegisterPage()));
+                  },
+                  child: const Text('Regístrese'),
+                ),
+              ],
             ),
-          ],
-        ),
           ],
         ),
       ),
