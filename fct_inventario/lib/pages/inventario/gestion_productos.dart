@@ -16,7 +16,7 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
   void _navegarAGaleria() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ProductGallery()), // Cambia esto por la clase de tu galería
+      MaterialPageRoute(builder: (context) => ProductGallery()), 
     );
   }
   final CollectionReference _productos =
