@@ -13,6 +13,9 @@
 | <img src="https://github.com/Daaviiidd/FCT-Zaitec/blob/main/fct_inventario/assets/images/inventario.png" style="height: 50%; width:50%;"/>  | <img src="https://github.com/Daaviiidd/FCT-Zaitec/blob/main/fct_inventario/assets/images/tienda.png" style="height: 50%; width:50%;"/>  |
 
 
+|                              Detalles del producto                              | 
+|:----------------------------------------------------------------------------:|
+| <img src="https://github.com/Daaviiidd/FCT-Zaitec/blob/main/fct_inventario/assets/images/zoom.png" style="height: 50%; width:50%;"/>  |2
 
 
 
