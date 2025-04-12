@@ -1,10 +1,16 @@
 # FCT-Oposiciones
-# Esto es una descripción del proyecto
-#
 
+|                              Loading                              | 
+|:----------------------------------------------------------------------------:|
+| <img src="https://github.com/Daaviiidd/FCT-Zaitec/blob/main/fct_inventario/assets/images/loading.png" style="height: 50%; width:50%;"/>  |2
 
-Mi rama fusionada
+|                               Inicio de sesión                              |                                   Formulario Registro                                    |
+|:------------------------------------------------------------------------------:|:------------------------------------------------------------------------------:|
+|  <img src="https://github.com/Daaviiidd/FCT-Zaitec/blob/main/fct_inventario/assets/images/login.png" style="height: 50%; width:50%;"/>  |  <img src="https://github.com/Daaviiidd/FCT-Zaitec/blob/main/fct_inventario/assets/images/register.png" style="height: 50%; width:50%;"/>  |
 
+|                               Inventario                              |                                   Tienda                                    |
+|:------------------------------------------------------------------------------:|:------------------------------------------------------------------------------:|
+| <img src="https://github.com/Daaviiidd/FCT-Zaitec/blob/main/fct_inventario/assets/images/inventario.png" style="height: 50%; width:50%;"/>  | <img src="https://github.com/Daaviiidd/FCT-Zaitec/blob/main/fct_inventario/assets/images/tienda.png" style="height: 50%; width:50%;"/>  |
 
 
 
