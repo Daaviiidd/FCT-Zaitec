@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'repository/auth_repository.dart';
 import 'services/auth_service.dart';
+import 'providers/carrito_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +28,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider<AuthProvider>(
           create: (_) => AuthProvider(authService: AuthService(authRepository: AuthRepository(baseUrl: ''))),
         ),
+        ChangeNotifierProvider(create: (_) => CarritoProvider()),//Añade al carrito
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
