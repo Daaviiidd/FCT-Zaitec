@@ -1,7 +1,6 @@
-// login_form.dart
 import 'package:flutter/material.dart';
 
-class LoginForm extends StatelessWidget {
+class LoginForm extends StatefulWidget {
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final VoidCallback onLogin;
@@ -14,23 +13,50 @@ class LoginForm extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  bool _obscurePassword = true;
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscurePassword = !_obscurePassword;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         TextField(
-          controller: emailController,
-          decoration: const InputDecoration(labelText: 'Email'),
+          controller: widget.emailController,
+          decoration: const InputDecoration(
+            labelText: 'Email',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.email),
+          ),
           keyboardType: TextInputType.emailAddress,
         ),
         const SizedBox(height: 16),
         TextField(
-          controller: passwordController,
-          decoration: const InputDecoration(labelText: 'Contraseña'),
-          obscureText: true,
+          controller: widget.passwordController,
+          obscureText: _obscurePassword,
+          decoration: InputDecoration(
+            labelText: 'Contraseña',
+            border: const OutlineInputBorder(),
+            prefixIcon: const Icon(Icons.lock),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _obscurePassword ? Icons.visibility : Icons.visibility_off,
+              ),
+              onPressed: _togglePasswordVisibility,
+            ),
+          ),
         ),
         const SizedBox(height: 24),
         ElevatedButton(
-          onPressed: onLogin,
+          onPressed: widget.onLogin,
           child: const Text('Iniciar sesión'),
         ),
       ],

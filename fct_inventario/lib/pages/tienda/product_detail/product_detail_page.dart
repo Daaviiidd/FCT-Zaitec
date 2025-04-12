@@ -42,24 +42,32 @@ class ProductDetailPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                nombre,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Center(  // Centrar el texto del nombre
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  nombre,
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,  // Centrado del texto
+                ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                '${precio.toStringAsFixed(2)} €',
-                style: const TextStyle(fontSize: 20, color: Colors.green),
+            Center(  // Centrar el precio
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  '${precio.toStringAsFixed(2)} €',
+                  style: const TextStyle(fontSize: 20, color: Colors.green),
+                  textAlign: TextAlign.center,  // Centrado del texto
+                ),
               ),
             ),
             const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(descripcion),
+            Center(
+              child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(descripcion, textAlign: TextAlign.center),
+            ),
             ),
             const SizedBox(height: 10),
             Center(

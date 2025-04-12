@@ -1,112 +1,135 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../product_detail/product_detail_page.dart';
+import '../tienda/widgets/product_card.dart';
+import '../../services/product_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../login/login_page.dart';
 
-class ProductGallery extends StatelessWidget {
+class ProductGallery extends StatefulWidget {
   const ProductGallery({Key? key}) : super(key: key);
 
-  Stream<QuerySnapshot> obtenerProductos() {
-    return FirebaseFirestore.instance.collection('productos').snapshots();
+  @override
+  State<ProductGallery> createState() => _ProductGalleryState();
+}
+
+class _ProductGalleryState extends State<ProductGallery> {
+  String _searchQuery = '';
+  String? nombreUsuario;
+
+  @override
+  void initState() {
+    super.initState();
+    obtenerNombreUsuario();
+  }
+
+  Future<void> obtenerNombreUsuario() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+
+      setState(() {
+        nombreUsuario = doc.exists ? doc['name'] : "Usuario";
+      });
+    }
+  }
+
+  Future<void> _cerrarSesion(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Has cerrado sesión')),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al cerrar sesión: $e')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tienda Virtual'),
+        title: Row(
+          children: [
+            const Icon(Icons.storefront, color: Colors.white),
+            const SizedBox(width: 10),
+            Text('Tienda'),
+          ],
+        ),
         backgroundColor: Colors.blueAccent,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () => _cerrarSesion(context),
+          ),
+        ],
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: obtenerProductos(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: Column(
+        children: [ // 👇 Bienvenida al usuario
+          Padding(
+            padding: const EdgeInsets.only(top: 16.0, left: 20.0, right: 20.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                '¡Bienvenido, ${nombreUsuario ?? "cargando..."}!',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: TextField(
+              decoration: const InputDecoration(
+                labelText: 'Buscar producto...',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.search),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value.toLowerCase();
+                });
+              },
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: ProductService.obtenerProductos(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No hay productos disponibles'));
-          }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(child: Text('No hay productos disponibles'));
+                }
 
-          final productos = snapshot.data!.docs;
+                final productos = snapshot.data!.docs.where((doc) {
+                  final nombre = doc['nombre'].toString().toLowerCase();
+                  return nombre.contains(_searchQuery);
+                }).toList();
 
-          return SizedBox(
-            height: 280,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              itemCount: productos.length,
-              itemBuilder: (context, index) {
-                final producto = productos[index];
-                final nombre = producto['nombre'];
-                final imagenUrl = producto['imagen'];
-                final precio = (producto['precio'] as num).toDouble();
-                final descripcion = producto['descripcion'] ?? 'Sin descripción';
+                if (productos.isEmpty) {
+                  return const Center(child: Text('No se encontraron productos.'));
+                }
 
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductDetailPage(
-                          nombre: nombre,
-                          imagenUrl: imagenUrl,
-                          precio: precio,
-                          descripcion: descripcion,
-                        ),
-                      ),
-                    );
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  itemCount: productos.length,
+                  itemBuilder: (context, index) {
+                    final producto = productos[index];
+                    return ProductCard(producto: producto);
                   },
-                  child: Container(
-                    width: 160,
-                    margin: const EdgeInsets.only(right: 10),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      elevation: 4,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-                            child: imagenUrl != null && imagenUrl.isNotEmpty
-                                ? Image.network(
-                                    imagenUrl,
-                                    height: 120,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Container(
-                                    height: 120,
-                                    color: Colors.grey[300],
-                                    child: const Icon(Icons.image, size: 80),
-                                  ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              nombre,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text(
-                              '${precio.toStringAsFixed(2)} €',
-                              style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                 );
               },
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }

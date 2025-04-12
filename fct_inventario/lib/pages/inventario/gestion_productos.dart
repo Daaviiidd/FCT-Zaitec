@@ -1,9 +1,12 @@
+// ... (importaciones no modificadas)
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';//Base de datos en tiempo real de Firebase 
-import 'package:firebase_messaging/firebase_messaging.dart'; // Importa el paquete de FCM
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';// Paquete de Flutter que permite seleccionar imágenes y videos desde la galería 
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import '../tienda/tienda_virtual_page.dart';
+import '../login/login_page.dart';
 
 class PaginaGestionProductos extends StatefulWidget {
   const PaginaGestionProductos({super.key});
@@ -13,21 +16,58 @@ class PaginaGestionProductos extends StatefulWidget {
 }
 
 class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
+  final CollectionReference _productos = FirebaseFirestore.instance.collection('productos');
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final TextEditingController _busquedaNombreController = TextEditingController();
+  final TextEditingController _busquedaCategoriaController = TextEditingController();
+  final TextEditingController _imagenUrlController = TextEditingController();
+
+  File? _imagenSeleccionada;
+
+//Método para llamar al usuario
+ String? nombreUsuario;
+
+  @override
+  void initState() {
+    super.initState();
+    obtenerNombreUsuario();
+  }
+  Future<void> obtenerNombreUsuario() async {
+    final user = FirebaseAuth.instance.currentUser;
+    
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+
+      setState(() {
+        nombreUsuario = doc.exists ? doc['name'] : "Usuario";
+      });
+    }
+  }
+
   void _navegarAGaleria() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ProductGallery()), 
+      MaterialPageRoute(builder: (context) => ProductGallery()),
     );
   }
-  final CollectionReference _productos =
-      FirebaseFirestore.instance.collection('productos');
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance; // Instancia de FCM
 
-  final TextEditingController _busquedaNombreController = TextEditingController();
-  final TextEditingController _busquedaCategoriaController = TextEditingController();
-  final TextEditingController _imagenUrlController = TextEditingController(); 
-
-  File? _imagenSeleccionada;
+//Método de cerrar sesión
+  Future<void> _cerrarSesion(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Has cerrado sesión')),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al cerrar sesión: $e')),
+      );
+    }
+  }
 
   Stream<QuerySnapshot> obtenerProductos() {
     return _productos.snapshots();
@@ -51,7 +91,6 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
       'createdAt': Timestamp.now(),
     });
 
-    // Verificar si el stock está bajo
     if (cantidadStock <= 5) {
       enviarNotificacionStockBajo(nombre);
     }
@@ -75,7 +114,6 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
       'imagen': imagenUrl ?? '',
     });
 
-    // Verificar si el stock está bajo
     if (cantidadStock <= 5) {
       enviarNotificacionStockBajo(nombre);
     }
@@ -96,13 +134,9 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
     }
   }
 
-  // Función para enviar la notificación de stock bajo
   Future<void> enviarNotificacionStockBajo(String nombreProducto) async {
     try {
-      // Enviar la notificación push utilizando FCM
-      await _firebaseMessaging.subscribeToTopic("stock_bajo"); // Se suscribe a un tema para notificaciones de stock bajo
-      // Enviar notificación
-      // Este código requiere que ya tengas configurada la parte del backend para enviar la notificación real.
+      await _firebaseMessaging.subscribeToTopic("stock_bajo");
       print("Notificación enviada para el producto: $nombreProducto");
     } catch (e) {
       print("Error al enviar la notificación: $e");
@@ -123,9 +157,9 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
     final _categoriaController = TextEditingController(text: categoria);
     final _cantidadController = TextEditingController(text: cantidadStock.toString());
     final _precioController = TextEditingController(text: precio.toString());
-    _imagenSeleccionada = null; // resetear imagen
-    _imagenUrlController.text = imagenUrl; // Rellenar el campo de URL si ya tiene valor
-//modal de ingreso de productos
+    _imagenSeleccionada = null;
+    _imagenUrlController.text = imagenUrl;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -139,13 +173,11 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
               _buildTextField('Cantidad en Stock', _cantidadController, isNumber: true),
               _buildTextField('Precio', _precioController, isNumber: true),
               const SizedBox(height: 16),
-              // Mostrar imagen desde URL si existe
               _imagenSeleccionada != null
                   ? Image.file(_imagenSeleccionada!, height: 100)
                   : imagenUrl.isNotEmpty
                       ? Image.network(imagenUrl, height: 100)
                       : Container(),
-              // Campo para ingresar la URL de la imagen
               TextField(
                 controller: _imagenUrlController,
                 decoration: InputDecoration(
@@ -178,24 +210,14 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
               final categoria = _categoriaController.text;
               final cantidadStock = int.tryParse(_cantidadController.text) ?? 0;
               final precio = double.tryParse(_precioController.text) ?? 0.0;
-
-              // Usar la URL proporcionada en lugar de subir una imagen
               String? imagenUrl = _imagenUrlController.text.isNotEmpty
                   ? _imagenUrlController.text
                   : null;
 
               if (id.isEmpty) {
-                await agregarProducto(
-                    nombre, descripcion, categoria, cantidadStock, precio, imagenUrl);
+                await agregarProducto(nombre, descripcion, categoria, cantidadStock, precio, imagenUrl);
               } else {
-                await editarProducto(
-                    id,
-                    nombre,
-                    descripcion,
-                    categoria,
-                    cantidadStock,
-                    precio,
-                    imagenUrl ?? imagenUrl);
+                await editarProducto(id, nombre, descripcion, categoria, cantidadStock, precio, imagenUrl);
               }
 
               Navigator.pop(context);
@@ -207,8 +229,7 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller,
-      {bool isNumber = false}) {
+  Widget _buildTextField(String label, TextEditingController controller, {bool isNumber = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 6.0),
       child: TextField(
@@ -228,19 +249,38 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Inventario'),
+       title: Row(
+          children: [
+            Icon(Icons.inventory, color: Colors.white),
+            SizedBox(width: 10),
+            Text('Inventario'),
+          ],
+        ),
         backgroundColor: Colors.blueAccent,
-         actions: [
-          // Botón en la esquina superior derecha para ir a la galería
+        actions: [
           IconButton(
-            icon: Icon(Icons.image),
+            icon: Icon(Icons.storefront),
             onPressed: _navegarAGaleria,
+          ),
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () => _cerrarSesion(context),
           ),
         ],
       ),
       body: Column(
         children: [
-          // Buscadores
+          // 👇 Bienvenida al usuario
+          Padding(
+            padding: const EdgeInsets.only(top: 16.0, left: 20.0, right: 20.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                '¡Bienvenido, ${nombreUsuario ?? "cargando..."}!',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 16.0),
             child: Row(
@@ -262,9 +302,7 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
                       filled: true,
                       fillColor: Colors.grey[200],
                     ),
-                    onChanged: (value) {
-                      setState(() {});
-                    },
+                    onChanged: (value) => setState(() {}),
                   ),
                 ),
                 SizedBox(width: 20),
@@ -285,15 +323,12 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
                       filled: true,
                       fillColor: Colors.grey[200],
                     ),
-                    onChanged: (value) {
-                      setState(() {});
-                    },
+                    onChanged: (value) => setState(() {}),
                   ),
                 ),
               ],
             ),
           ),
-          // Botón para agregar producto
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
             child: ElevatedButton(
@@ -301,9 +336,8 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
               child: Text('Agregar Producto'),
             ),
           ),
-          // Lista de productos
           Expanded(
-            child: StreamBuilder<QuerySnapshot>( 
+            child: StreamBuilder<QuerySnapshot>(
               stream: obtenerProductos(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -319,9 +353,7 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
                   final categoria = producto['categoria'].toString().toLowerCase();
                   final filtroNombre = _busquedaNombreController.text.toLowerCase();
                   final filtroCategoria = _busquedaCategoriaController.text.toLowerCase();
-
-                  return nombre.contains(filtroNombre) &&
-                      categoria.contains(filtroCategoria);
+                  return nombre.contains(filtroNombre) && categoria.contains(filtroCategoria);
                 }).toList();
 
                 if (productos.isEmpty) {
@@ -341,15 +373,14 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
                     final imagenUrl = producto['imagen'];
 
                     return Card(
-                      margin:
-                          const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
+                      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
                       child: ListTile(
                         contentPadding: EdgeInsets.all(16),
                         leading: imagenUrl.isNotEmpty
                             ? Image.network(imagenUrl, width: 50, height: 50, fit: BoxFit.cover)
                             : Icon(Icons.image),
                         title: Text(nombre),
-                        subtitle: Text('Categoría: $categoria\nStock: $cantidadStock\nPrecio: \ ${precio.toStringAsFixed(2)} €'),
+                        subtitle: Text('Categoría: $categoria\nStock: $cantidadStock\nPrecio: ${precio.toStringAsFixed(2)} €'),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
