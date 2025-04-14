@@ -1,10 +1,8 @@
-// ... (importaciones no modificadas)
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import '../tienda/tienda_virtual_page.dart';
 import '../login/login_page.dart';
 
@@ -17,27 +15,23 @@ class PaginaGestionProductos extends StatefulWidget {
 
 class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
   final CollectionReference _productos = FirebaseFirestore.instance.collection('productos');
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  final TextEditingController _busquedaNombreController = TextEditingController();
-  final TextEditingController _busquedaCategoriaController = TextEditingController();
   final TextEditingController _imagenUrlController = TextEditingController();
-
   File? _imagenSeleccionada;
+  String _searchQuery = ''; // Controlador de búsqueda
 
-//Método para llamar al usuario
- String? nombreUsuario;
+  String? nombreUsuario;
 
   @override
   void initState() {
     super.initState();
     obtenerNombreUsuario();
   }
+
   Future<void> obtenerNombreUsuario() async {
     final user = FirebaseAuth.instance.currentUser;
-    
+
     if (user != null) {
       final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-
       setState(() {
         nombreUsuario = doc.exists ? doc['name'] : "Usuario";
       });
@@ -51,7 +45,6 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
     );
   }
 
-//Método de cerrar sesión
   Future<void> _cerrarSesion(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
@@ -90,10 +83,6 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
       'imagen': imagenUrl ?? "",
       'createdAt': Timestamp.now(),
     });
-
-    if (cantidadStock <= 5) {
-      enviarNotificacionStockBajo(nombre);
-    }
   }
 
   Future<void> editarProducto(
@@ -113,10 +102,6 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
       'precio': precio,
       'imagen': imagenUrl ?? '',
     });
-
-    if (cantidadStock <= 5) {
-      enviarNotificacionStockBajo(nombre);
-    }
   }
 
   Future<void> eliminarProducto(String id) async {
@@ -131,15 +116,6 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
       setState(() {
         _imagenSeleccionada = File(pickedFile.path);
       });
-    }
-  }
-
-  Future<void> enviarNotificacionStockBajo(String nombreProducto) async {
-    try {
-      await _firebaseMessaging.subscribeToTopic("stock_bajo");
-      print("Notificación enviada para el producto: $nombreProducto");
-    } catch (e) {
-      print("Error al enviar la notificación: $e");
     }
   }
 
@@ -245,11 +221,21 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
     );
   }
 
+  // Método para filtrar los productos por nombre y categoría
+  List<DocumentSnapshot> _filtrarProductos(List<DocumentSnapshot> productos) {
+    return productos.where((producto) {
+      final nombre = producto['nombre'].toString().toLowerCase();
+      final categoria = producto['categoria'].toString().toLowerCase();
+      return nombre.contains(_searchQuery.toLowerCase()) ||
+             categoria.contains(_searchQuery.toLowerCase());
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-       title: Row(
+        title: Row(
           children: [
             Icon(Icons.inventory, color: Colors.white),
             SizedBox(width: 10),
@@ -270,7 +256,6 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
       ),
       body: Column(
         children: [
-          // 👇 Bienvenida al usuario
           Padding(
             padding: const EdgeInsets.only(top: 16.0, left: 20.0, right: 20.0),
             child: Align(
@@ -282,58 +267,26 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _busquedaNombreController,
-                    decoration: InputDecoration(
-                      labelText: 'Por nombre',
-                      prefixIcon: Icon(Icons.search),
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.clear),
-                        onPressed: () {
-                          _busquedaNombreController.clear();
-                          setState(() {});
-                        },
-                      ),
-                      border: OutlineInputBorder(),
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                    ),
-                    onChanged: (value) => setState(() {}),
-                  ),
-                ),
-                SizedBox(width: 20),
-                Expanded(
-                  child: TextField(
-                    controller: _busquedaCategoriaController,
-                    decoration: InputDecoration(
-                      labelText: 'Por categoría',
-                      prefixIcon: Icon(Icons.category),
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.clear),
-                        onPressed: () {
-                          _busquedaCategoriaController.clear();
-                          setState(() {});
-                        },
-                      ),
-                      border: OutlineInputBorder(),
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                    ),
-                    onChanged: (value) => setState(() {}),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
             child: ElevatedButton(
               onPressed: () => mostrarDialogoProducto(),
               child: Text('Agregar Producto'),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            child: TextField(
+              onChanged: (query) {
+                setState(() {
+                  _searchQuery = query;
+                });
+              },
+              decoration: InputDecoration(
+                labelText: 'Buscar Producto por Nombre o Categoría',
+                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Colors.grey[200],
+              ),
             ),
           ),
           Expanded(
@@ -348,17 +301,7 @@ class _PaginaGestionProductosState extends State<PaginaGestionProductos> {
                   return Center(child: Text('No hay productos disponibles'));
                 }
 
-                final productos = snapshot.data!.docs.where((producto) {
-                  final nombre = producto['nombre'].toString().toLowerCase();
-                  final categoria = producto['categoria'].toString().toLowerCase();
-                  final filtroNombre = _busquedaNombreController.text.toLowerCase();
-                  final filtroCategoria = _busquedaCategoriaController.text.toLowerCase();
-                  return nombre.contains(filtroNombre) && categoria.contains(filtroCategoria);
-                }).toList();
-
-                if (productos.isEmpty) {
-                  return Center(child: Text('No se encontraron productos'));
-                }
+                final productos = _filtrarProductos(snapshot.data!.docs);
 
                 return ListView.builder(
                   itemCount: productos.length,

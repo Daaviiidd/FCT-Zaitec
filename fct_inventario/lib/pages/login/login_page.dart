@@ -2,10 +2,11 @@ import 'package:fct_inventario/pages/register/register_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../core/styles.dart'; // Importa los estilos
 import '../../pages/inventario/gestion_productos.dart';
 import '../../pages/tienda/tienda_virtual_page.dart';
-import 'widgets/loading_widget.dart';
-import '../login/widgets/login_form.dart';
+import '../../pages/login/widgets/loading_widget.dart';
+import 'widgets/login_form.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -114,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(32.0),
+          padding: AppStyles.defaultPadding, // Usar el padding definido en styles.dart
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
