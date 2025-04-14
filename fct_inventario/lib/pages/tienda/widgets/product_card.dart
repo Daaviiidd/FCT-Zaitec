@@ -11,6 +11,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final carrito = Provider.of<CarritoProvider>(context);
+    final imagenUrl = producto['imagen'];  // Se utiliza el campo 'imagen' de Firestore
 
     return Card(
       elevation: 3,
@@ -18,6 +19,14 @@ class ProductCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
         contentPadding: const EdgeInsets.all(12),
+        leading: imagenUrl != null
+            ? Image.network(
+                imagenUrl,
+                width: 60,
+                height: 60,
+                fit: BoxFit.cover,
+              )
+            : const Icon(Icons.image, size: 60),  // Si no hay imagen, muestra un ícono predeterminado
         title: Text(producto['nombre'], style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text('Precio: ${producto['precio']} €'),
         trailing: ElevatedButton.icon(

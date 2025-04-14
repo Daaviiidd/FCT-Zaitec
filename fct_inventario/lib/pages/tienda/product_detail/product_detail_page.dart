@@ -74,7 +74,7 @@ class ProductDetailPage extends StatelessWidget {
               child: ElevatedButton.icon(
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Producto añadido al carrito')),
+                    const SnackBar(content: Text('Producto añadido al carrito.')),
                   );
                 },
                 icon: const Icon(Icons.shopping_cart),

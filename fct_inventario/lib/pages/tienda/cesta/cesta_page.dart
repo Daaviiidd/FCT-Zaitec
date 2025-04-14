@@ -17,9 +17,19 @@ class CestaPage extends StatelessWidget {
               itemCount: carrito.productos.length,
               itemBuilder: (context, index) {
                 final producto = carrito.productos[index];
+                final imagenUrl = producto['imagen'];
+
                 return Card(
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ListTile(
+                    leading: imagenUrl != null
+                        ? Image.network(
+                            imagenUrl,
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                          )
+                        : const Icon(Icons.image, size: 60),  
                     title: Text(producto['nombre']),
                     subtitle: Text('Precio: ${producto['precio']} €'),
                     trailing: Row(
@@ -28,7 +38,11 @@ class CestaPage extends StatelessWidget {
                         IconButton(
                           icon: const Icon(Icons.remove),
                           onPressed: () {
-                            carrito.cambiarCantidad(producto['id'], producto['cantidad'] - 1);
+                            if (producto['cantidad'] > 1) {
+                              carrito.cambiarCantidad(producto['id'], producto['cantidad'] - 1);
+                            } else {
+                              carrito.eliminarProducto(producto['id']);
+                            }
                           },
                         ),
                         Text('${producto['cantidad']}'),
